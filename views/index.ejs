@@ -2,16 +2,171 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>Word Chain</title>
+    <title>끝말잇기 얍!</title>
     <style>
-      .chat_log{ width: 95%; height: 400px; }
-      .name{ width: 15%; }
-      .message{ width: 65%; }
-      .chat{ width: 10%; }
+      .chat_log{ width: 1060px; height: 300px; }
+      .name{ width: 150px; height: 30px; }
+      .message{ width: 780px; height: 30px; }
+      .chat{ width: 110px; height: 40px; }
+
+      header{
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-around;
+      }
+
+      .title{
+          position: absolute;
+          width: 400px;
+          height: 180px;
+          left: 70px;
+          top: -70px;
+          
+          font-family: 'netmarble';
+          font-style: normal;
+          font-weight: 700;
+          font-size: 40px;
+          line-height: 125px;
+          
+          color: #000000;
+      }
+
+      .button1 {
+          border: none;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;  
+        }
+
+        .exit_button{
+          position: absolute;
+          width: 208px;
+          height: 87px;
+          left: 890px;
+          top: 10px;
+        }
+
+        .player_ready{
+          position: relative;
+          top: -15px;
+          left: 450px;
+          width: 200px;
+          height: 70px;
+          background-color: #E8C615;
+          border-radius: 20%;
+          padding: 0px;
+        }
+
+      .box_text{
+          position: relative;
+          text-align: center;
+          top: -1%;
+          font-size: 20px;
+          font-weight: bold;
+          
+      }
+
+      footer{
+          flex-flow: row nowrap;
+          justify-content: space-around;
+          align-items: flex-end;
+      }
+
+      .box_text1{
+          position: relative;
+          text-align: center;
+          top: -1%;
+          font-size: 20px;
+          font-weight: bold;
+      }
+
+      .player_status{
+          position: relative;
+          width: 190px;
+          height: 190px;
+          background-color: #D9D9D9;
+          border-radius: 20%;
+          padding: 0px;
+          left: 5px;
+          bottom: -20px;
+      }
+
+      .player_order{
+          position: relative;
+          width: 190px;
+          height: 190px;
+          background-color: #D9D9D9;
+          border-radius: 20%;
+          padding: 0px;
+          right: -870px;
+          bottom: 190px;
+      }
+
+      .button2 {
+          border: none;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          cursor: pointer;
+          border-radius: 5px;
+          color: white;
+          background-color: #3498DB; 
+          border-color: #3498DB;  
+      }
+
+      .readyWatching{
+          font-size: 16px;
+          padding: 0px 5px;
+          margin-left: 5px;
+          border: 0px;
+          outline: none;
+          float: left;
+          border-radius: 30px;
+          position: relative;
+          margin-top: 50px;
+          text-align: center;
+          left:350px;
+          top: -300px;
+          
+      }
+
+      .ready_button{
+          width: 200px;
+          height: 45px;
+          border: 10px;
+          bottom: 10px;
+      }
+
+      .watching_button{
+          width: 200px;
+          height: 45px;
+          border: 10px;
+          background-color: #5E5E5E; 
+          border-color: #5E5E5E;  
+      }
     </style>
+    <script>
+      var sec = 10;
+    </script>
   </head>
   <body>
-    <h1>Word Chain</h1>
+    <div style="width: 100%">
+      <h3 class="title">끝말잇기 얍!</h3>
+
+      <div class = 'button1 exit_button'><button style="background-color: #5E5E5E; border-color: #5E5E5E; 
+        color: white; padding: 15px 50px 15px 50px; border-radius: 10px;">나가기</button></div>
+
+      <div class = "player_ready">
+        <div class = "box_text">
+            <p>준비</p>
+        </div>
+    </div>
+
     <div>
       <textarea id="chatLog" class="chat_log" readonly></textarea>
     </div>
@@ -31,13 +186,95 @@
         $('#message').focus();
         e.preventDefault();
       });
-      socket.on('response_message', function(msg){
+      socket.on('response_message', function(msg, r, last){
         $('#chatLog').append(msg+'\n');
         $('#chatLog').scrollTop($('#chatLog')[0].scrollHeight);
+
+        if (r == true) {
+          sec = 10;
+
+          document.getElementById("first").innerHTML = last; // 다음 첫 글자를 이전 마지막 글자로 설정
+        }
       });
       socket.on('change_name', function(name){
         $('#name').val(name);
       });
+
+      setInterval(() => {
+        sec--;
+
+        document.getElementById("time").innerHTML = sec;
+
+        if (sec <= 0) {
+          sec = 10;
+        }
+      }, 1000);
     </script>
+
+    <footer>
+      <div style="width: 100%; height: 100%;">
+
+          <div style="position: absolute;
+          width: 80px;
+          height: 90px;
+          left: 420px;
+          top: 480px;
+          background: #41993F;">
+            <div style=
+            "top: 20px;
+            font-family: 'netmarble';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 40px;" class="box_text1" id = "time">
+              
+            </div>
+          </div>
+
+          <div style="position: absolute;
+          width: 80px;
+          height: 90px;
+          left: 640px;
+          top: 480px;
+          background: #f1ee36;">
+            <div style=
+            "top: 20px;
+            font-family: 'netmarble';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 40px;" class="box_text1" id = "first">
+              가
+            </div>
+          </div>
+      
+          <!-- <div style = "position: absolute;
+          width: 30px;
+          height: 30px;
+          left: 315px;
+          top: 463px;
+          border-radius:80px;
+          position: absolute;
+          background: #FFFFFF;
+          z-index: 1;
+          border: 5px solid #8ED982; ">
+          </div> -->
+
+          <div class = "player_status">
+              <div class="box_text1">
+                  <p>플레이어</p>
+              </div>
+          </div>
+          
+          <div class = "player_order">
+              <div class = "box_text1">
+                  <p>관전자</p>
+              </div>
+          </div>
+
+          <div class="readyWatching">
+              <button class="button2 ready_button">준비</button>
+              <button class="button2 watching_button">관전하기</button>
+          </div>
+      </div>
+    </footer>
   </body>
 </html>
