@@ -31,27 +31,8 @@
           color: #000000;
       }
 
-      .button1 {
-          border: none;
-          color: white;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
-          font-size: 16px;
-          margin: 4px 2px;
-          cursor: pointer;  
-        }
-
-        .exit_button{
-          position: absolute;
-          width: 208px;
-          height: 87px;
-          left: 890px;
-          top: 10px;
-        }
-
-        .player_ready{
-          position: relative;
+      .player_ready{
+        position: relative;
           top: -15px;
           left: 450px;
           width: 200px;
@@ -59,7 +40,7 @@
           background-color: #E8C615;
           border-radius: 20%;
           padding: 0px;
-        }
+      }
 
       .box_text{
           position: relative;
@@ -132,22 +113,13 @@
           text-align: center;
           left:350px;
           top: -300px;
-          
       }
 
       .ready_button{
-          width: 200px;
+          width: 400px;
           height: 45px;
           border: 10px;
           bottom: 10px;
-      }
-
-      .watching_button{
-          width: 200px;
-          height: 45px;
-          border: 10px;
-          background-color: #5E5E5E; 
-          border-color: #5E5E5E;  
       }
     </style>
     <script>
@@ -158,12 +130,10 @@
     <div style="width: 100%">
       <h3 class="title">끝말잇기 얍!</h3>
 
-      <div class = 'button1 exit_button'><button style="background-color: #5E5E5E; border-color: #5E5E5E; 
-        color: white; padding: 15px 50px 15px 50px; border-radius: 10px;">나가기</button></div>
-
       <div class = "player_ready">
         <div class = "box_text">
-            <p>준비</p>
+            <p>게임 종료까지</p>
+            <div id = "limit" type="text"></div>
         </div>
     </div>
 
@@ -181,7 +151,7 @@
     <script>
       var socket = io();
       $('#chat').on('submit', function(e){
-        socket.emit('request_message', $('#name').val(), $('#message').val());
+        socket.emit('request_message', $('#name').val(), $('#message').val(), sec);
         $('#message').val('');
         $('#message').focus();
         e.preventDefault();
@@ -199,21 +169,39 @@
       socket.on('change_name', function(name){
         $('#name').val(name);
       });
+      socket.on('game_start', function(last){
+        document.getElementById("first").innerHTML = last; // 다음 첫 글자를 이전 마지막 글자로 설정
 
-      setInterval(() => {
-        sec--;
+        setInterval(() => {
+          sec--;
 
-        document.getElementById("time").innerHTML = sec;
+          document.getElementById("time").innerHTML = sec;
 
-        if (sec <= 0) {
-          sec = 10;
+          if (sec <= 0) {
+            sec = 10;
+            socket.emit('time_out');
+          }
+        }, 1000);
+      });
+      socket.on('change', function(r, s){
+        if (r != null) {
+          r.replace(/\n/g, '<br/>');
+          document.getElementById("userList").innerText = r;
         }
-      }, 1000);
+
+        if (s != null) {
+          s.replace(/\n/g, '<br/>');
+          document.getElementById("score").innerText = s;
+        }
+      });
+
+      function ready() {
+        socket.emit('ready', $('#name').val());
+      }
     </script>
 
     <footer>
       <div style="width: 100%; height: 100%;">
-
           <div style="position: absolute;
           width: 80px;
           height: 90px;
@@ -226,7 +214,7 @@
             font-style: normal;
             font-weight: 700;
             font-size: 40px;" class="box_text1" id = "time">
-              
+              -
             </div>
           </div>
 
@@ -242,37 +230,26 @@
             font-style: normal;
             font-weight: 700;
             font-size: 40px;" class="box_text1" id = "first">
-              가
+              -
             </div>
           </div>
-      
-          <!-- <div style = "position: absolute;
-          width: 30px;
-          height: 30px;
-          left: 315px;
-          top: 463px;
-          border-radius:80px;
-          position: absolute;
-          background: #FFFFFF;
-          z-index: 1;
-          border: 5px solid #8ED982; ">
-          </div> -->
 
           <div class = "player_status">
               <div class="box_text1">
                   <p>플레이어</p>
+                  <div id = "userList" type="text"></div>
               </div>
           </div>
           
           <div class = "player_order">
               <div class = "box_text1">
-                  <p>관전자</p>
+                  <p>점수판</p>
+                  <div id = "score" type="text"></div>
               </div>
           </div>
 
           <div class="readyWatching">
-              <button class="button2 ready_button">준비</button>
-              <button class="button2 watching_button">관전하기</button>
+              <button class="button2 ready_button" onclick="ready()">준비</button>
           </div>
       </div>
     </footer>
