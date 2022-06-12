@@ -39,6 +39,37 @@ app.post('/game', function(req, res) {
   res.render('index');
 });
 
+app.get('/over', function(req, res) {
+  var s = "";
+  var k = Object.keys(score);
+  var max = score[k[0]];
+  var min = score[k[0]];
+  for (let i = 0; i < k.length; i++) {
+    s += k[i] + " : " + score[k[i]] + "\n";
+
+    if (score[k[i]] > max) {
+      max = score[k[i]];
+    }
+    if (score[k[i]] < min) {
+      min = score[k[i]];
+    }
+  }
+
+  var w = "우승자 : ";
+  var l = "꼴등 : ";
+  for (let i = 0; i < k.length; i++) {
+    if (score[k[i]] >= max) {
+      w += k[i] + " ";
+    }
+
+    if (score[k[i]] <= min) {
+      l += k[i] + " ";
+    }
+  }
+
+  res.render('popup', {s: s, w: w, l: l});
+});
+
 io.on('connection', (socket) => {
   var name = socket.id;
   userNick[name] = cNick;
@@ -105,14 +136,16 @@ io.on('connection', (socket) => {
   });
 
   socket.on('time_out', () => {
-    msg = "\n\t\t[ *** " + userId[turn] + " 시간 초과!";
-    io.emit('response_message', msg, true, last);
+    if (start == 1) {
+      msg = "\n\t\t[ *** " + userId[turn] + " 시간 초과!";
+      io.emit('response_message', msg, true, last);
 
-    turn++; // 다음 차례
-    if (turn >= users) {turn = 0}
+      turn++; // 다음 차례
+      if (turn >= users) {turn = 0}
 
-    msg = "\t\t\t\t다음 차례 : " + userId[turn] + " *** ]\n";
-    io.emit('response_message', msg, true, last);
+      msg = "\t\t\t\t다음 차례 : " + userId[turn] + " *** ]\n";
+      io.emit('response_message', msg, true, last);
+    }
   });
 
   socket.on('ready', (n) => {
@@ -141,7 +174,7 @@ io.on('connection', (socket) => {
       if (all == 1) {
         var msg;
         start = 1;
-        last = "항"
+        last = "한"
         io.emit('game_start', last);
         msg = "\n\t\t[ *** 게임 시작 ! 다음 차례 : " + userId[turn] + " *** ]\n";
         io.emit('response_message', msg);

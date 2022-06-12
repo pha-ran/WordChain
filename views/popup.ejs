@@ -1,0 +1,45 @@
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script>
+    var s = "<%= s%>";
+    s.replace(/\n/g, '<br/>');
+  </script>
+</head>
+<body>
+  <style>
+    h1{text-align:center;}
+  </style>
+
+  <div style="position: absolute;
+  width: 400px;
+  height: 400px;
+  left: 360px;
+  top: 120px;
+  background: #FFFFFF;
+  border:3px solid black;
+  padding:10px;
+  ">
+  <h1>최종 점수 </h1>
+  <div style="white-space: pre-line;
+    text-align:center;
+    font-family:'netmarble';
+    font-size: 20px;">
+    <%= s%>
+  </div>
+  <div style="white-space: pre-line;
+    text-align:center;
+    font-family:'netmarble';
+    font-size: 24px;">
+    <%= w%>
+  </div>
+  <div style="white-space: pre-line;
+    text-align:center;
+    font-family:'netmarble';
+    font-size: 24px;">
+    <%= l%>
+  </div>
+  <br>
+  </div>
+  <body bgcolor='gray'>
+</body>

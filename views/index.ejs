@@ -36,7 +36,7 @@
           top: -15px;
           left: 450px;
           width: 200px;
-          height: 70px;
+          height: 100px;
           background-color: #E8C615;
           border-radius: 20%;
           padding: 0px;
@@ -55,14 +55,6 @@
           flex-flow: row nowrap;
           justify-content: space-around;
           align-items: flex-end;
-      }
-
-      .box_text1{
-          position: relative;
-          text-align: center;
-          top: -1%;
-          font-size: 20px;
-          font-weight: bold;
       }
 
       .player_status{
@@ -124,16 +116,19 @@
     </style>
     <script>
       var sec = 10;
+      var lim = 300;
     </script>
   </head>
   <body>
+    <form id = "gameOver" action="/over" method="GET"></form>
+
     <div style="width: 100%">
       <h3 class="title">끝말잇기 얍!</h3>
 
       <div class = "player_ready">
         <div class = "box_text">
             <p>게임 종료까지</p>
-            <div id = "limit" type="text"></div>
+            <div style="font-size: 40px;" id = "limit" type="text"></div>
         </div>
     </div>
 
@@ -174,12 +169,17 @@
 
         setInterval(() => {
           sec--;
+          lim--;
 
           document.getElementById("time").innerHTML = sec;
+          document.getElementById("limit").innerHTML = lim;
 
           if (sec <= 0) {
-            sec = 10;
             socket.emit('time_out');
+          }
+
+          if (lim <= 0) {
+            document.getElementById("gameOver").submit();
           }
         }, 1000);
       });
@@ -213,7 +213,7 @@
             font-family: 'netmarble';
             font-style: normal;
             font-weight: 700;
-            font-size: 40px;" class="box_text1" id = "time">
+            font-size: 40px;" class="box_text" id = "time">
               -
             </div>
           </div>
@@ -229,20 +229,20 @@
             font-family: 'netmarble';
             font-style: normal;
             font-weight: 700;
-            font-size: 40px;" class="box_text1" id = "first">
+            font-size: 40px;" class="box_text" id = "first">
               -
             </div>
           </div>
 
           <div class = "player_status">
-              <div class="box_text1">
+              <div class="box_text">
                   <p>플레이어</p>
                   <div id = "userList" type="text"></div>
               </div>
           </div>
           
           <div class = "player_order">
-              <div class = "box_text1">
+              <div class = "box_text">
                   <p>점수판</p>
                   <div id = "score" type="text"></div>
               </div>
